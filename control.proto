@@ -50,18 +50,15 @@ message SetChannelsEnabledRequest {
   bool enabled = 1;
 }
 
-message SetFrontendAttenuationRequest {
+message SetAttenuationRequest {
   int32 attenuation_db = 1;
 }
 
-message SetCalAttenuationRequest {
-  int32 attenuation_db = 1;
-}
 
 // Response messages
 message SetCalibrationEnabledResponse {}
 
-message SetFrontendAttenuationResponse {}
+message SetAttenuationResponse {}
 
 message SetChannelsEnabledResponse {}
 
@@ -75,15 +72,17 @@ message GetStatusRequest {}
 
 message SetCalAttenuationResponse {}
 
+message SetFrontendAttenuationResponse {}
+
 
 message GetStatusResponse {
   bool calibration_enabled = 1;
   int32 attenuation_db = 2;
   bool channels_enabled = 3;
   int32 lo_frequency_mhz = 4;
-  int32 rf_switch = 5;
-  int32 mixer_switch = 6;
-  int32 if_switch = 7;
+  RfSwitchOption rf_switch = 5;
+  MixerSwitchOption mixer_switch = 6;
+  IfSwitchOption if_switch = 7;
 }
 
 // Packet message with all request and response types
@@ -91,7 +90,7 @@ message Packet {
   oneof message_id {
     SetCalibrationEnabledRequest set_cal_enabled_request = 1;
     SetCalibrationEnabledResponse set_cal_enabled_response = 2;
-    SetFrontendAttenuationRequest set_frontend_attenuation_request = 3;
+    SetAttenuationRequest set_frontend_attenuation_request = 3;
     SetChannelsEnabledRequest set_channels_enabled_request = 4;
     SetFrontendAttenuationResponse set_frontend_attenuation_response = 5;
     SetChannelsEnabledResponse set_channels_enabled_response = 6;
@@ -103,7 +102,7 @@ message Packet {
     SetPllFrequencyResponse set_pll_frequency_response = 12;
     SetRfBandRequest set_rf_band_request = 13;
     SetRfBandResponse set_rf_band_response = 14;
-    SetCalAttenuationRequest set_cal_attenuation_request = 15;
+    SetAttenuationRequest set_cal_attenuation_request = 15;
     SetCalAttenuationResponse set_cal_attenuation_response = 16;
   }
 }
