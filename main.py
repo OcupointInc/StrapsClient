@@ -4,7 +4,7 @@ import control_pb2
 from utils import send_packet, get_and_print_status, wait_for_enter, print_step_header
 
 # --- Configuration ---
-SERVER_IP = "172.16.91.30"
+SERVER_IP = "192.168.0.90"
 SERVER_PORT = 5000
 
 def main():
@@ -14,6 +14,7 @@ def main():
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.settimeout(10)  # 10-second timeout
             sock.connect((SERVER_IP, SERVER_PORT))
+            sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1) # Add this
             print("✅ Connection successful.")
 
             # 1. Get and print initial status

@@ -2,14 +2,14 @@ import socket
 import control_pb2
 
 # --- Configuration ---
-BUFFER_SIZE = 4096
+BUFFER_SIZE = 128
 
 def send_packet(sock, packet_to_send):
     """Helper function to serialize, send, and receive a protobuf packet."""
     try:
         packet_type = packet_to_send.WhichOneof('message_id')
         serialized_data = packet_to_send.SerializeToString()
-        #print(f"\n> Sending: {packet_type} ({len(serialized_data)} bytes)")
+        print(f"\n> Sending: {packet_type} ({len(serialized_data)} bytes) {serialized_data}")
 
         sock.sendall(serialized_data)
         data_received = sock.recv(BUFFER_SIZE)
@@ -21,7 +21,7 @@ def send_packet(sock, packet_to_send):
         received_packet = control_pb2.Packet()
         received_packet.ParseFromString(data_received)
         response_type = received_packet.WhichOneof('message_id')
-        #print(f"< Received: {response_type} ({len(data_received)} bytes)")
+        print(f"< Received: {response_type} ({len(data_received)} bytes)")
         return received_packet
 
     except socket.timeout:

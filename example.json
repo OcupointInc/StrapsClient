@@ -1,0 +1,16 @@
+{
+  "server_ip": "192.168.1.90",
+  "server_port": 5000,
+  "commands": {
+    "set_channels_enabled": true,
+    "set_cal_enabled": false,
+    "set_frontend_attenuation": 0,
+    "set_switches": {
+        "rf_switch": "RF_SWITCH_OPTION_2GHZ_LPF",
+        "mixer_switch": "MIXER_SWITCH_OPTION_MIXER",
+        "if_switch": "IF_SWITCH_OPTION_1_2GHZ_BANDPASS"
+    },
+    "set_pll_frequency": 1800,
+    "get_status": true
+  }
+}
