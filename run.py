@@ -88,9 +88,16 @@ def run_cli():
         logger.critical("Invalid config: Missing IP or commands.")
         return
 
+    # --- REORDER COMMANDS ---
+    # Separate attenuation so it can be appended to the end of the execution list
+    attenuation_key = "set_frontend_attenuation"
+    ordered_cmds = [(k, v) for k, v in cmds.items() if k != attenuation_key]
+    
+    if attenuation_key in cmds:
+        ordered_cmds.append((attenuation_key, cmds[attenuation_key]))
+
     logger.info(f"Opening session with Hardware at {ip}:{port}")
     
-    # --- PERSISTENT CONNECTION CONTEXT ---
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
@@ -99,7 +106,8 @@ def run_cli():
             sock.connect((ip, port))
             logger.info("Connected successfully.")
 
-            for key, val in cmds.items():
+            # Iterate through the reordered list
+            for key, val in ordered_cmds:
                 logger.info(f"Sending: '{key}'")
                 
                 response = execute_command(sock, key, val)
@@ -112,8 +120,7 @@ def run_cli():
                         s = response.get_status_response
                         logger.info(f"   [Status] Attn: {s.attenuation_db}dB, LO: {s.lo_frequency_mhz}MHz")
                 
-                # Small delay to let the RP2040 process the hardware change
-                # (e.g., PLL locking or SPI writes to attenuators)
+                # Small delay to let hardware settle
                 time.sleep(0.05)
 
     except ConnectionRefusedError:
@@ -124,6 +131,6 @@ def run_cli():
         logger.error(f"❌ Session Error: {e}")
 
     logger.info("Session closed.")
-
+    
 if __name__ == "__main__":
     run_cli()

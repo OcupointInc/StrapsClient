@@ -6,11 +6,11 @@
     "set_cal_enabled": false,
     "set_frontend_attenuation": 0,
     "set_switches": {
-        "rf_switch": "RF_SWITCH_OPTION_2GHZ_LPF",
+        "rf_switch": "RF_SWITCH_OPTION_4GHZ_LPF",
         "mixer_switch": "MIXER_SWITCH_OPTION_MIXER",
         "if_switch": "IF_SWITCH_OPTION_1_2GHZ_BANDPASS"
     },
-    "set_pll_frequency": 1800,
+    "set_pll_frequency": 3000,
     "get_status": true
   }
 }
