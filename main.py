@@ -96,7 +96,8 @@ def main():
             for internal in (False, True):
                 print(f"\n--- Setting Clock Source to {source_name(internal)} ---")
                 clock_packet = control_pb2.Packet()
-                clock_packet.set_clock_source_request.internal = internal
+                # Spelled `external` on the wire, so negate.
+                clock_packet.set_clock_source_request.external = not internal
                 send_packet(sock, clock_packet)
                 get_and_print_status(sock)
                 wait_for_enter()

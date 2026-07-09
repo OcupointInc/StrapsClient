@@ -56,8 +56,15 @@ message SetCalSourceRequest {
 // Reference-clock source select (SI53301 CLK_SEL line). Selects whether the
 // LMX2595 LO is fed by the on-board oscillator or an external reference. Set
 // this *before* tuning the PLL, since it changes the LO's reference.
+//
+// NOTE: this select is inverted relative to SetCalSourceRequest above, and
+// relative to the rf-control client, which sends `internal` on this same field
+// number. Field 1 is a bool either way, so the two disagree only in meaning,
+// not on the wire — nothing will fail to decode, the LO just locks to the other
+// reference. Keep the sense of this field and clock_source_external below the
+// same, and negate at the Python boundary rather than in the callers.
 message SetClockSourceRequest {
-  bool internal = 1;  // false = external clock, true = internal on-board oscillator
+  bool external = 1;  // false = internal on-board oscillator, true = external clock
 }
 
 message SetChannelsEnabledRequest {
@@ -109,9 +116,11 @@ message GetStatusResponse {
   // Calibration source: true = internal noise source (CAL_SEL high),
   // false = external (CAL_SEL low).
   bool cal_source_internal = 10;
-  // Reference-clock source: true = internal on-board oscillator,
-  // false = external.
-  bool clock_source_internal = 12;
+  // Reference-clock source: true = external clock, false = internal on-board
+  // oscillator. Inverted relative to cal_source_internal above, to match
+  // SetClockSourceRequest.external. Note that an unset field decodes as false,
+  // which reads as "internal" here.
+  bool clock_source_external = 12;
 }
 
 // Packet message with all request and response types.

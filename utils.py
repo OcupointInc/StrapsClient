@@ -4,14 +4,16 @@ import control_pb2
 # --- Configuration ---
 BUFFER_SIZE = 128
 
-# The calibration-source (CAL_SEL) and clock-source (CLK_SEL) selects are both
-# carried on the wire as a single `internal` bool. Spell them as words on the
-# way in and out, so a config file never has to encode which way the bool goes.
+# The calibration-source (CAL_SEL) and clock-source (CLK_SEL) selects are each
+# carried on the wire as a single bool, but with opposite senses: CAL_SEL sends
+# `internal`, CLK_SEL sends `external`. Everything in Python speaks in terms of
+# `internal`; the clock-source call sites negate on the way into the protobuf
+# and back out of it, so the inversion lives at that boundary and nowhere else.
 _INTERNAL_ALIASES = ("internal", "int", "onboard", "on", "noise", "true")
 _EXTERNAL_ALIASES = ("external", "ext", "ref", "off", "false")
 
 def parse_source(value, what):
-    """Coerce a JSON value into the protobuf `internal` bool.
+    """Coerce a JSON value into an `internal` bool (true = internal source).
 
     Accepts a real bool, or any of the internal/external aliases as a string.
     Raises ValueError on anything else rather than silently picking a default —
@@ -77,7 +79,7 @@ def get_and_print_status(sock):
         print("\n" + "*"*20 + " DEVICE STATUS " + "*"*19)
         print(f"  Calibration Enabled  : {status.calibration_enabled}")
         print(f"  Calibration Source   : {source_name(status.cal_source_internal)}")
-        print(f"  Clock Source         : {source_name(status.clock_source_internal)}")
+        print(f"  Clock Source         : {source_name(not status.clock_source_external)}")
         print(f"  Frontend Attenuation : {status.attenuation_db} dB")
         print(f"  LO Frequency         : {status.lo_frequency_mhz} MHz")
         print(f"  RF Switch State      : {control_pb2.RfSwitchOption.Name(status.rf_switch)}")

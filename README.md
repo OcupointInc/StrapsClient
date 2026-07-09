@@ -168,19 +168,27 @@ example doesn't exercise, and reusing one would desync the client from the devic
 
 ### Source Selects
 
-Both source selects carry a single `internal` boolean: `true` selects the
-internal source, `false` the external one.
+Both source selects carry a single boolean, but **with opposite senses** — read
+the field name, not the position:
 
-  * **`SetCalSourceRequest` (`CAL_SEL`)** — picks the calibration source. The
-    internal noise-source amplifier is only powered when calibration mode is
-    enabled *and* the internal source is selected, so pair this with
-    `SetCalibrationEnabledRequest`.
-  * **`SetClockSourceRequest` (`CLK_SEL`)** — picks the reference the LMX2595 LO
-    locks to. **Set this before tuning the PLL** (`SetPllFrequencyRequest` or
+  * **`SetCalSourceRequest` (`CAL_SEL`)** — carries `internal`: `true` selects
+    the internal noise source. The internal noise-source amplifier is only
+    powered when calibration mode is enabled *and* the internal source is
+    selected, so pair this with `SetCalibrationEnabledRequest`.
+  * **`SetClockSourceRequest` (`CLK_SEL`)** — carries `external`: `true` selects
+    the external reference. Picks the reference the LMX2595 LO locks to. **Set
+    this before tuning the PLL** (`SetPllFrequencyRequest` or
     `SetRfBandRequest`), since changing the reference changes the LO.
 
-Both appear in `GetStatusResponse` as `cal_source_internal` and
-`clock_source_internal`.
+They appear in `GetStatusResponse` as `cal_source_internal` and
+`clock_source_external`, matching the sense of their respective requests.
+
+> **Wire-compatibility note.** The clock select is inverted relative to the
+> `rf-control` client, which sends `internal` on this same field number. Both
+> are a bool on field 1, so packets decode fine either way — the disagreement is
+> in meaning, and it surfaces as the LO locking to the wrong reference rather
+> than as a decode error. Firmware does not implement `SetClockSource` yet
+> (it replies `ERROR_CODE_UNSUPPORTED`), so this is currently unexercised.
 
 In a `run.py` JSON config they're spelled as words, and `run.py` always sends
 `set_clock_source` before any LO-tuning command regardless of where it appears
