@@ -23,6 +23,8 @@ This code serves as a foundational example for interacting with the RF Frontend 
 ## Features
 
   * **Calibration Control:** Enable or disable the frontend's calibration mode.
+  * **Calibration Source Select:** Choose between the **internal** noise source and an **external** calibration input.
+  * **Reference Clock Select:** Choose between the **internal** on-board oscillator and an **external** reference for the LO.
   * **Dual Attenuation Control:** Independently set attenuation for both the main **frontend** path and the **calibration** path.
   * **RF Band Selection:** Easily switch between the system's defined operational frequency bands.
   * **Manual Switch Control:** Directly command the state of the RF, Mixer, and IF switch banks for custom signal path configuration.
@@ -133,10 +135,12 @@ The `main.py` script will perform a detailed sequence of operations, pausing for
 2.  **Get Initial Status:** Queries the device and displays its current state upon connection.
 3.  **Enter Calibration Mode:** Enables calibration and sets both **frontend** and **calibration** attenuation to 0 dB.
 4.  **Set Cal Attenuation:** Increases the **calibration** path attenuation to 30 dB.
-5.  **Cycle RF Bands:** Loops through all available RF bands, setting each one sequentially.
-6.  **Manually Set Switches:** Sends a single command to configure a custom state for the RF, Mixer, and IF switches.
-7.  **Manually Set LO Frequency:** Sets the LO to a specific frequency (e.g., 2250 MHz).
-8.  **Disconnect:** Closes the network connection upon completion.
+5.  **Select Calibration Source:** Toggles the cal source between internal and external.
+6.  **Select Clock Source:** Toggles the reference clock between external and internal.
+7.  **Cycle RF Bands:** Loops through all available RF bands, setting each one sequentially.
+8.  **Manually Set Switches:** Sends a single command to configure a custom state for the RF, Mixer, and IF switches.
+9.  **Manually Set LO Frequency:** Sets the LO to a specific frequency (e.g., 2250 MHz).
+10. **Disconnect:** Closes the network connection upon completion.
 
 -----
 
@@ -145,6 +149,8 @@ The `main.py` script will perform a detailed sequence of operations, pausing for
 Communication with the RF Frontend uses Google Protocol Buffers. The `control.proto` file defines the message structures for all requests and responses. This ensures a robust and extensible communication protocol.
 
   * `SetCalibrationEnabledRequest`: Turns calibration on/off.
+  * `SetCalSourceRequest`: Selects the calibration source — internal noise source vs. external input (`CAL_SEL`).
+  * `SetClockSourceRequest`: Selects the reference clock — internal on-board oscillator vs. external reference (`CLK_SEL`).
   * `SetFrontendAttenuationRequest`: Sets the frontend path attenuation.
   * `SetCalAttenuationRequest`: Sets the calibration path attenuation.
   * `SetChannelsEnabledRequest`: Turns RF channels on/off.
@@ -154,6 +160,44 @@ Communication with the RF Frontend uses Google Protocol Buffers. The `control.pr
   * `GetStatusRequest`: Retrieves the current state of the device.
   * `GetStatusResponse`: The response containing the device's status.
   * `Packet`: A wrapper message that encapsulates all other message types for transport.
+
+Each `Packet` field number is the message id on the wire, so it must match the
+firmware exactly. The numbers this client leaves unused (17-26 and 29) are
+marked `reserved` in `control.proto` — they belong to firmware features this
+example doesn't exercise, and reusing one would desync the client from the device.
+
+### Source Selects
+
+Both source selects carry a single `internal` boolean: `true` selects the
+internal source, `false` the external one.
+
+  * **`SetCalSourceRequest` (`CAL_SEL`)** — picks the calibration source. The
+    internal noise-source amplifier is only powered when calibration mode is
+    enabled *and* the internal source is selected, so pair this with
+    `SetCalibrationEnabledRequest`.
+  * **`SetClockSourceRequest` (`CLK_SEL`)** — picks the reference the LMX2595 LO
+    locks to. **Set this before tuning the PLL** (`SetPllFrequencyRequest` or
+    `SetRfBandRequest`), since changing the reference changes the LO.
+
+Both appear in `GetStatusResponse` as `cal_source_internal` and
+`clock_source_internal`.
+
+In a `run.py` JSON config they're spelled as words, and `run.py` always sends
+`set_clock_source` before any LO-tuning command regardless of where it appears
+in the file:
+
+```json
+{
+  "commands": {
+    "set_cal_source": "internal",
+    "set_clock_source": "external",
+    "set_pll_frequency": 3000
+  }
+}
+```
+
+`"internal"` / `"external"` are the canonical spellings; `true` / `false` also
+work. An unrecognised value is rejected before anything is sent to the device.
 
 -----
 

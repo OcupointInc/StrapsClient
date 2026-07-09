@@ -4,6 +4,35 @@ import control_pb2
 # --- Configuration ---
 BUFFER_SIZE = 128
 
+# The calibration-source (CAL_SEL) and clock-source (CLK_SEL) selects are both
+# carried on the wire as a single `internal` bool. Spell them as words on the
+# way in and out, so a config file never has to encode which way the bool goes.
+_INTERNAL_ALIASES = ("internal", "int", "onboard", "on", "noise", "true")
+_EXTERNAL_ALIASES = ("external", "ext", "ref", "off", "false")
+
+def parse_source(value, what):
+    """Coerce a JSON value into the protobuf `internal` bool.
+
+    Accepts a real bool, or any of the internal/external aliases as a string.
+    Raises ValueError on anything else rather than silently picking a default —
+    quietly guessing 'external' here would mistune the LO.
+    """
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        v = value.strip().lower()
+        if v in _INTERNAL_ALIASES:
+            return True
+        if v in _EXTERNAL_ALIASES:
+            return False
+    raise ValueError(
+        f"invalid {what} {value!r}: expected 'internal' or 'external' (or a bool)"
+    )
+
+def source_name(internal):
+    """Render an `internal` bool back as the word used in configs and logs."""
+    return "internal" if internal else "external"
+
 def send_packet(sock, packet_to_send):
     """Helper function to serialize, send, and receive a protobuf packet."""
     try:
@@ -47,6 +76,8 @@ def get_and_print_status(sock):
 
         print("\n" + "*"*20 + " DEVICE STATUS " + "*"*19)
         print(f"  Calibration Enabled  : {status.calibration_enabled}")
+        print(f"  Calibration Source   : {source_name(status.cal_source_internal)}")
+        print(f"  Clock Source         : {source_name(status.clock_source_internal)}")
         print(f"  Frontend Attenuation : {status.attenuation_db} dB")
         print(f"  LO Frequency         : {status.lo_frequency_mhz} MHz")
         print(f"  RF Switch State      : {control_pb2.RfSwitchOption.Name(status.rf_switch)}")

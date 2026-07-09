@@ -46,6 +46,20 @@ message SetCalibrationEnabledRequest {
   bool enabled = 1;
 }
 
+// Calibration source select (CAL_SEL line). The internal noise-source amplifier
+// is enabled by the firmware only when calibration mode is active AND the
+// internal source is selected — so pair this with SetCalibrationEnabledRequest.
+message SetCalSourceRequest {
+  bool internal = 1;  // false = external cal (CAL_SEL low), true = internal (high)
+}
+
+// Reference-clock source select (SI53301 CLK_SEL line). Selects whether the
+// LMX2595 LO is fed by the on-board oscillator or an external reference. Set
+// this *before* tuning the PLL, since it changes the LO's reference.
+message SetClockSourceRequest {
+  bool internal = 1;  // false = external clock, true = internal on-board oscillator
+}
+
 message SetChannelsEnabledRequest {
   bool enabled = 1;
 }
@@ -57,6 +71,10 @@ message SetAttenuationRequest {
 
 // Response messages
 message SetCalibrationEnabledResponse {}
+
+message SetCalSourceResponse {}
+
+message SetClockSourceResponse {}
 
 message SetAttenuationResponse {}
 
@@ -76,6 +94,11 @@ message SetFrontendAttenuationResponse {}
 
 
 message GetStatusResponse {
+  // 8, 9 and 11 carry board_type, rf_switch_channel and cal_attenuation_db in
+  // the firmware's proto. This client doesn't use them, but the numbers must
+  // stay free so the fields below keep matching the wire format.
+  reserved 8, 9, 11;
+
   bool calibration_enabled = 1;
   int32 attenuation_db = 2;
   bool channels_enabled = 3;
@@ -83,10 +106,24 @@ message GetStatusResponse {
   RfSwitchOption rf_switch = 5;
   MixerSwitchOption mixer_switch = 6;
   IfSwitchOption if_switch = 7;
+  // Calibration source: true = internal noise source (CAL_SEL high),
+  // false = external (CAL_SEL low).
+  bool cal_source_internal = 10;
+  // Reference-clock source: true = internal on-board oscillator,
+  // false = external.
+  bool clock_source_internal = 12;
 }
 
-// Packet message with all request and response types
+// Packet message with all request and response types.
+//
+// Field numbers are the message ids on the wire: they must match the firmware's
+// proto exactly. Numbers absent here (17-26, 29) belong to firmware features
+// this example client doesn't exercise — config/EEPROM access, the SP8T switch
+// board, and the generic ErrorResponse. They're reserved so a future addition
+// can't quietly reuse one and desync from the device.
 message Packet {
+  reserved 17 to 26, 29;
+
   oneof message_id {
     SetCalibrationEnabledRequest set_cal_enabled_request = 1;
     SetCalibrationEnabledResponse set_cal_enabled_response = 2;
@@ -104,5 +141,9 @@ message Packet {
     SetRfBandResponse set_rf_band_response = 14;
     SetAttenuationRequest set_cal_attenuation_request = 15;
     SetCalAttenuationResponse set_cal_attenuation_response = 16;
+    SetCalSourceRequest set_cal_source_request = 27;
+    SetCalSourceResponse set_cal_source_response = 28;
+    SetClockSourceRequest set_clock_source_request = 30;
+    SetClockSourceResponse set_clock_source_response = 31;
   }
 }

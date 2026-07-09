@@ -1,7 +1,7 @@
 import socket
 import time
 import control_pb2
-from utils import send_packet, get_and_print_status, wait_for_enter, print_step_header
+from utils import send_packet, get_and_print_status, wait_for_enter, print_step_header, source_name
 
 # --- Configuration ---
 SERVER_IP = "192.168.0.90"
@@ -69,8 +69,40 @@ def main():
             get_and_print_status(sock)
             wait_for_enter()
             
-            # 5. Loop through all RF bands
-            print_step_header(6, "Looping through RF bands")
+            # 5. Toggle the calibration source (CAL_SEL) between internal and external.
+            #    The internal noise-source amp only comes on when calibration mode
+            #    is enabled AND the internal source is selected, so enable cal first.
+            print_step_header(6, "Selecting the Calibration Source")
+            cal_packet = control_pb2.Packet()
+            cal_packet.set_cal_enabled_request.enabled = True
+            send_packet(sock, cal_packet)
+
+            for internal in (True, False):
+                print(f"\n--- Setting Calibration Source to {source_name(internal)} ---")
+                cal_source_packet = control_pb2.Packet()
+                cal_source_packet.set_cal_source_request.internal = internal
+                send_packet(sock, cal_source_packet)
+                get_and_print_status(sock)
+                wait_for_enter()
+
+            cal_packet = control_pb2.Packet()
+            cal_packet.set_cal_enabled_request.enabled = False
+            send_packet(sock, cal_packet)
+
+            # 6. Toggle the reference clock source (CLK_SEL) between the on-board
+            #    oscillator and an external reference. This selects what the LMX2595
+            #    LO locks to, so it must be set before tuning the PLL below.
+            print_step_header(7, "Selecting the Reference Clock Source")
+            for internal in (False, True):
+                print(f"\n--- Setting Clock Source to {source_name(internal)} ---")
+                clock_packet = control_pb2.Packet()
+                clock_packet.set_clock_source_request.internal = internal
+                send_packet(sock, clock_packet)
+                get_and_print_status(sock)
+                wait_for_enter()
+
+            # 7. Loop through all RF bands
+            print_step_header(8, "Looping through RF bands")
             # Get a list of all RF band enum values
             rf_bands = control_pb2.RfBand.values()
             

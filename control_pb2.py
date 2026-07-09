@@ -13,21 +13,21 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rcontrol.proto\x12\x07\x63ontrol\"/\n\x16SetPllFrequencyRequest\x12\x15\n\rfrequency_mhz\x18\x01 \x01(\x05\"1\n\x10SetRfBandRequest\x12\x1d\n\x04\x62\x61nd\x18\x01 \x01(\x0e\x32\x0f.control.RfBand\"\x9e\x01\n\x12SetSwitchesRequest\x12*\n\trf_switch\x18\x01 \x01(\x0e\x32\x17.control.RfSwitchOption\x12\x30\n\x0cmixer_switch\x18\x02 \x01(\x0e\x32\x1a.control.MixerSwitchOption\x12*\n\tif_switch\x18\x03 \x01(\x0e\x32\x17.control.IfSwitchOption\"/\n\x1cSetCalibrationEnabledRequest\x12\x0f\n\x07\x65nabled\x18\x01 \x01(\x08\",\n\x19SetChannelsEnabledRequest\x12\x0f\n\x07\x65nabled\x18\x01 \x01(\x08\"/\n\x15SetAttenuationRequest\x12\x16\n\x0e\x61ttenuation_db\x18\x01 \x01(\x05\"\x1f\n\x1dSetCalibrationEnabledResponse\"\x18\n\x16SetAttenuationResponse\"\x1c\n\x1aSetChannelsEnabledResponse\"\x15\n\x13SetSwitchesResponse\"\x19\n\x17SetPllFrequencyResponse\"\x13\n\x11SetRfBandResponse\"\x12\n\x10GetStatusRequest\"\x1b\n\x19SetCalAttenuationResponse\" \n\x1eSetFrontendAttenuationResponse\"\x86\x02\n\x11GetStatusResponse\x12\x1b\n\x13\x63\x61libration_enabled\x18\x01 \x01(\x08\x12\x16\n\x0e\x61ttenuation_db\x18\x02 \x01(\x05\x12\x18\n\x10\x63hannels_enabled\x18\x03 \x01(\x08\x12\x18\n\x10lo_frequency_mhz\x18\x04 \x01(\x05\x12*\n\trf_switch\x18\x05 \x01(\x0e\x32\x17.control.RfSwitchOption\x12\x30\n\x0cmixer_switch\x18\x06 \x01(\x0e\x32\x1a.control.MixerSwitchOption\x12*\n\tif_switch\x18\x07 \x01(\x0e\x32\x17.control.IfSwitchOption\"\xef\x08\n\x06Packet\x12H\n\x17set_cal_enabled_request\x18\x01 \x01(\x0b\x32%.control.SetCalibrationEnabledRequestH\x00\x12J\n\x18set_cal_enabled_response\x18\x02 \x01(\x0b\x32&.control.SetCalibrationEnabledResponseH\x00\x12J\n set_frontend_attenuation_request\x18\x03 \x01(\x0b\x32\x1e.control.SetAttenuationRequestH\x00\x12J\n\x1cset_channels_enabled_request\x18\x04 \x01(\x0b\x32\".control.SetChannelsEnabledRequestH\x00\x12T\n!set_frontend_attenuation_response\x18\x05 \x01(\x0b\x32\'.control.SetFrontendAttenuationResponseH\x00\x12L\n\x1dset_channels_enabled_response\x18\x06 \x01(\x0b\x32#.control.SetChannelsEnabledResponseH\x00\x12\x37\n\x12get_status_request\x18\x07 \x01(\x0b\x32\x19.control.GetStatusRequestH\x00\x12\x39\n\x13get_status_response\x18\x08 \x01(\x0b\x32\x1a.control.GetStatusResponseH\x00\x12;\n\x14set_switches_request\x18\t \x01(\x0b\x32\x1b.control.SetSwitchesRequestH\x00\x12=\n\x15set_switches_response\x18\n \x01(\x0b\x32\x1c.control.SetSwitchesResponseH\x00\x12\x44\n\x19set_pll_frequency_request\x18\x0b \x01(\x0b\x32\x1f.control.SetPllFrequencyRequestH\x00\x12\x46\n\x1aset_pll_frequency_response\x18\x0c \x01(\x0b\x32 .control.SetPllFrequencyResponseH\x00\x12\x38\n\x13set_rf_band_request\x18\r \x01(\x0b\x32\x19.control.SetRfBandRequestH\x00\x12:\n\x14set_rf_band_response\x18\x0e \x01(\x0b\x32\x1a.control.SetRfBandResponseH\x00\x12\x45\n\x1bset_cal_attenuation_request\x18\x0f \x01(\x0b\x32\x1e.control.SetAttenuationRequestH\x00\x12J\n\x1cset_cal_attenuation_response\x18\x10 \x01(\x0b\x32\".control.SetCalAttenuationResponseH\x00\x42\x0c\n\nmessage_id*N\n\x0eRfSwitchOption\x12\x1d\n\x19RF_SWITCH_OPTION_4GHZ_LPF\x10\x00\x12\x1d\n\x19RF_SWITCH_OPTION_2GHZ_LPF\x10\x01*R\n\x11MixerSwitchOption\x12\x1d\n\x19MIXER_SWITCH_OPTION_MIXER\x10\x00\x12\x1e\n\x1aMIXER_SWITCH_OPTION_BYPASS\x10\x01*W\n\x0eIfSwitchOption\x12\x1f\n\x1bIF_SWITCH_OPTION_900MHZ_LPF\x10\x00\x12$\n IF_SWITCH_OPTION_1_2GHZ_BANDPASS\x10\x01*\x86\x01\n\x06RfBand\x12\x15\n\x11RF_BAND_10_900MHZ\x10\x00\x12\x17\n\x13RF_BAND_900_1800MHZ\x10\x01\x12\x18\n\x14RF_BAND_1800_2700MHZ\x10\x02\x12\x18\n\x14RF_BAND_2700_3600MHZ\x10\x03\x12\x18\n\x14RF_BAND_3600_4500MHZ\x10\x04\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rcontrol.proto\x12\x07\x63ontrol\"/\n\x16SetPllFrequencyRequest\x12\x15\n\rfrequency_mhz\x18\x01 \x01(\x05\"1\n\x10SetRfBandRequest\x12\x1d\n\x04\x62\x61nd\x18\x01 \x01(\x0e\x32\x0f.control.RfBand\"\x9e\x01\n\x12SetSwitchesRequest\x12*\n\trf_switch\x18\x01 \x01(\x0e\x32\x17.control.RfSwitchOption\x12\x30\n\x0cmixer_switch\x18\x02 \x01(\x0e\x32\x1a.control.MixerSwitchOption\x12*\n\tif_switch\x18\x03 \x01(\x0e\x32\x17.control.IfSwitchOption\"/\n\x1cSetCalibrationEnabledRequest\x12\x0f\n\x07\x65nabled\x18\x01 \x01(\x08\"\'\n\x13SetCalSourceRequest\x12\x10\n\x08internal\x18\x01 \x01(\x08\")\n\x15SetClockSourceRequest\x12\x10\n\x08internal\x18\x01 \x01(\x08\",\n\x19SetChannelsEnabledRequest\x12\x0f\n\x07\x65nabled\x18\x01 \x01(\x08\"/\n\x15SetAttenuationRequest\x12\x16\n\x0e\x61ttenuation_db\x18\x01 \x01(\x05\"\x1f\n\x1dSetCalibrationEnabledResponse\"\x16\n\x14SetCalSourceResponse\"\x18\n\x16SetClockSourceResponse\"\x18\n\x16SetAttenuationResponse\"\x1c\n\x1aSetChannelsEnabledResponse\"\x15\n\x13SetSwitchesResponse\"\x19\n\x17SetPllFrequencyResponse\"\x13\n\x11SetRfBandResponse\"\x12\n\x10GetStatusRequest\"\x1b\n\x19SetCalAttenuationResponse\" \n\x1eSetFrontendAttenuationResponse\"\xd4\x02\n\x11GetStatusResponse\x12\x1b\n\x13\x63\x61libration_enabled\x18\x01 \x01(\x08\x12\x16\n\x0e\x61ttenuation_db\x18\x02 \x01(\x05\x12\x18\n\x10\x63hannels_enabled\x18\x03 \x01(\x08\x12\x18\n\x10lo_frequency_mhz\x18\x04 \x01(\x05\x12*\n\trf_switch\x18\x05 \x01(\x0e\x32\x17.control.RfSwitchOption\x12\x30\n\x0cmixer_switch\x18\x06 \x01(\x0e\x32\x1a.control.MixerSwitchOption\x12*\n\tif_switch\x18\x07 \x01(\x0e\x32\x17.control.IfSwitchOption\x12\x1b\n\x13\x63\x61l_source_internal\x18\n \x01(\x08\x12\x1d\n\x15\x63lock_source_internal\x18\x0c \x01(\x08J\x04\x08\x08\x10\tJ\x04\x08\t\x10\nJ\x04\x08\x0b\x10\x0c\"\x87\x0b\n\x06Packet\x12H\n\x17set_cal_enabled_request\x18\x01 \x01(\x0b\x32%.control.SetCalibrationEnabledRequestH\x00\x12J\n\x18set_cal_enabled_response\x18\x02 \x01(\x0b\x32&.control.SetCalibrationEnabledResponseH\x00\x12J\n set_frontend_attenuation_request\x18\x03 \x01(\x0b\x32\x1e.control.SetAttenuationRequestH\x00\x12J\n\x1cset_channels_enabled_request\x18\x04 \x01(\x0b\x32\".control.SetChannelsEnabledRequestH\x00\x12T\n!set_frontend_attenuation_response\x18\x05 \x01(\x0b\x32\'.control.SetFrontendAttenuationResponseH\x00\x12L\n\x1dset_channels_enabled_response\x18\x06 \x01(\x0b\x32#.control.SetChannelsEnabledResponseH\x00\x12\x37\n\x12get_status_request\x18\x07 \x01(\x0b\x32\x19.control.GetStatusRequestH\x00\x12\x39\n\x13get_status_response\x18\x08 \x01(\x0b\x32\x1a.control.GetStatusResponseH\x00\x12;\n\x14set_switches_request\x18\t \x01(\x0b\x32\x1b.control.SetSwitchesRequestH\x00\x12=\n\x15set_switches_response\x18\n \x01(\x0b\x32\x1c.control.SetSwitchesResponseH\x00\x12\x44\n\x19set_pll_frequency_request\x18\x0b \x01(\x0b\x32\x1f.control.SetPllFrequencyRequestH\x00\x12\x46\n\x1aset_pll_frequency_response\x18\x0c \x01(\x0b\x32 .control.SetPllFrequencyResponseH\x00\x12\x38\n\x13set_rf_band_request\x18\r \x01(\x0b\x32\x19.control.SetRfBandRequestH\x00\x12:\n\x14set_rf_band_response\x18\x0e \x01(\x0b\x32\x1a.control.SetRfBandResponseH\x00\x12\x45\n\x1bset_cal_attenuation_request\x18\x0f \x01(\x0b\x32\x1e.control.SetAttenuationRequestH\x00\x12J\n\x1cset_cal_attenuation_response\x18\x10 \x01(\x0b\x32\".control.SetCalAttenuationResponseH\x00\x12>\n\x16set_cal_source_request\x18\x1b \x01(\x0b\x32\x1c.control.SetCalSourceRequestH\x00\x12@\n\x17set_cal_source_response\x18\x1c \x01(\x0b\x32\x1d.control.SetCalSourceResponseH\x00\x12\x42\n\x18set_clock_source_request\x18\x1e \x01(\x0b\x32\x1e.control.SetClockSourceRequestH\x00\x12\x44\n\x19set_clock_source_response\x18\x1f \x01(\x0b\x32\x1f.control.SetClockSourceResponseH\x00\x42\x0c\n\nmessage_idJ\x04\x08\x11\x10\x1bJ\x04\x08\x1d\x10\x1e*N\n\x0eRfSwitchOption\x12\x1d\n\x19RF_SWITCH_OPTION_4GHZ_LPF\x10\x00\x12\x1d\n\x19RF_SWITCH_OPTION_2GHZ_LPF\x10\x01*R\n\x11MixerSwitchOption\x12\x1d\n\x19MIXER_SWITCH_OPTION_MIXER\x10\x00\x12\x1e\n\x1aMIXER_SWITCH_OPTION_BYPASS\x10\x01*W\n\x0eIfSwitchOption\x12\x1f\n\x1bIF_SWITCH_OPTION_900MHZ_LPF\x10\x00\x12$\n IF_SWITCH_OPTION_1_2GHZ_BANDPASS\x10\x01*\x86\x01\n\x06RfBand\x12\x15\n\x11RF_BAND_10_900MHZ\x10\x00\x12\x17\n\x13RF_BAND_900_1800MHZ\x10\x01\x12\x18\n\x14RF_BAND_1800_2700MHZ\x10\x02\x12\x18\n\x14RF_BAND_2700_3600MHZ\x10\x03\x12\x18\n\x14RF_BAND_3600_4500MHZ\x10\x04\x62\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'control_pb2', globals())
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  _RFSWITCHOPTION._serialized_start=2077
-  _RFSWITCHOPTION._serialized_end=2155
-  _MIXERSWITCHOPTION._serialized_start=2157
-  _MIXERSWITCHOPTION._serialized_end=2239
-  _IFSWITCHOPTION._serialized_start=2241
-  _IFSWITCHOPTION._serialized_end=2328
-  _RFBAND._serialized_start=2331
-  _RFBAND._serialized_end=2465
+  _RFSWITCHOPTION._serialized_start=2569
+  _RFSWITCHOPTION._serialized_end=2647
+  _MIXERSWITCHOPTION._serialized_start=2649
+  _MIXERSWITCHOPTION._serialized_end=2731
+  _IFSWITCHOPTION._serialized_start=2733
+  _IFSWITCHOPTION._serialized_end=2820
+  _RFBAND._serialized_start=2823
+  _RFBAND._serialized_end=2957
   _SETPLLFREQUENCYREQUEST._serialized_start=26
   _SETPLLFREQUENCYREQUEST._serialized_end=73
   _SETRFBANDREQUEST._serialized_start=75
@@ -36,30 +36,38 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _SETSWITCHESREQUEST._serialized_end=285
   _SETCALIBRATIONENABLEDREQUEST._serialized_start=287
   _SETCALIBRATIONENABLEDREQUEST._serialized_end=334
-  _SETCHANNELSENABLEDREQUEST._serialized_start=336
-  _SETCHANNELSENABLEDREQUEST._serialized_end=380
-  _SETATTENUATIONREQUEST._serialized_start=382
-  _SETATTENUATIONREQUEST._serialized_end=429
-  _SETCALIBRATIONENABLEDRESPONSE._serialized_start=431
-  _SETCALIBRATIONENABLEDRESPONSE._serialized_end=462
-  _SETATTENUATIONRESPONSE._serialized_start=464
-  _SETATTENUATIONRESPONSE._serialized_end=488
-  _SETCHANNELSENABLEDRESPONSE._serialized_start=490
-  _SETCHANNELSENABLEDRESPONSE._serialized_end=518
-  _SETSWITCHESRESPONSE._serialized_start=520
-  _SETSWITCHESRESPONSE._serialized_end=541
-  _SETPLLFREQUENCYRESPONSE._serialized_start=543
-  _SETPLLFREQUENCYRESPONSE._serialized_end=568
-  _SETRFBANDRESPONSE._serialized_start=570
-  _SETRFBANDRESPONSE._serialized_end=589
-  _GETSTATUSREQUEST._serialized_start=591
-  _GETSTATUSREQUEST._serialized_end=609
-  _SETCALATTENUATIONRESPONSE._serialized_start=611
-  _SETCALATTENUATIONRESPONSE._serialized_end=638
-  _SETFRONTENDATTENUATIONRESPONSE._serialized_start=640
-  _SETFRONTENDATTENUATIONRESPONSE._serialized_end=672
-  _GETSTATUSRESPONSE._serialized_start=675
-  _GETSTATUSRESPONSE._serialized_end=937
-  _PACKET._serialized_start=940
-  _PACKET._serialized_end=2075
+  _SETCALSOURCEREQUEST._serialized_start=336
+  _SETCALSOURCEREQUEST._serialized_end=375
+  _SETCLOCKSOURCEREQUEST._serialized_start=377
+  _SETCLOCKSOURCEREQUEST._serialized_end=418
+  _SETCHANNELSENABLEDREQUEST._serialized_start=420
+  _SETCHANNELSENABLEDREQUEST._serialized_end=464
+  _SETATTENUATIONREQUEST._serialized_start=466
+  _SETATTENUATIONREQUEST._serialized_end=513
+  _SETCALIBRATIONENABLEDRESPONSE._serialized_start=515
+  _SETCALIBRATIONENABLEDRESPONSE._serialized_end=546
+  _SETCALSOURCERESPONSE._serialized_start=548
+  _SETCALSOURCERESPONSE._serialized_end=570
+  _SETCLOCKSOURCERESPONSE._serialized_start=572
+  _SETCLOCKSOURCERESPONSE._serialized_end=596
+  _SETATTENUATIONRESPONSE._serialized_start=598
+  _SETATTENUATIONRESPONSE._serialized_end=622
+  _SETCHANNELSENABLEDRESPONSE._serialized_start=624
+  _SETCHANNELSENABLEDRESPONSE._serialized_end=652
+  _SETSWITCHESRESPONSE._serialized_start=654
+  _SETSWITCHESRESPONSE._serialized_end=675
+  _SETPLLFREQUENCYRESPONSE._serialized_start=677
+  _SETPLLFREQUENCYRESPONSE._serialized_end=702
+  _SETRFBANDRESPONSE._serialized_start=704
+  _SETRFBANDRESPONSE._serialized_end=723
+  _GETSTATUSREQUEST._serialized_start=725
+  _GETSTATUSREQUEST._serialized_end=743
+  _SETCALATTENUATIONRESPONSE._serialized_start=745
+  _SETCALATTENUATIONRESPONSE._serialized_end=772
+  _SETFRONTENDATTENUATIONRESPONSE._serialized_start=774
+  _SETFRONTENDATTENUATIONRESPONSE._serialized_end=806
+  _GETSTATUSRESPONSE._serialized_start=809
+  _GETSTATUSRESPONSE._serialized_end=1149
+  _PACKET._serialized_start=1152
+  _PACKET._serialized_end=2567
 # @@protoc_insertion_point(module_scope)

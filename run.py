@@ -4,6 +4,7 @@ import argparse
 import logging
 import time
 import control_pb2
+from utils import parse_source, source_name
 
 # --- Setup Logging ---
 logging.basicConfig(
@@ -26,6 +27,10 @@ def execute_command(sock, key, val):
             packet.set_channels_enabled_request.enabled = val
         elif key == "set_cal_enabled":
             packet.set_cal_enabled_request.enabled = val
+        elif key == "set_cal_source":
+            packet.set_cal_source_request.internal = parse_source(val, "cal source")
+        elif key == "set_clock_source":
+            packet.set_clock_source_request.internal = parse_source(val, "clock source")
         elif key == "set_frontend_attenuation":
             packet.set_frontend_attenuation_request.attenuation_db = val
         elif key == "set_rf_band":
@@ -89,12 +94,18 @@ def run_cli():
         return
 
     # --- REORDER COMMANDS ---
-    # Separate attenuation so it can be appended to the end of the execution list
-    attenuation_key = "set_frontend_attenuation"
-    ordered_cmds = [(k, v) for k, v in cmds.items() if k != attenuation_key]
-    
-    if attenuation_key in cmds:
-        ordered_cmds.append((attenuation_key, cmds[attenuation_key]))
+    # A few commands are order-sensitive regardless of where they sit in the
+    # JSON file:
+    #   set_clock_source selects the LMX2595's reference, so it has to land
+    #     before anything that tunes the LO (set_pll_frequency, set_rf_band).
+    #   set_frontend_attenuation goes last, since a band/switch change resets it.
+    first_keys = ["set_clock_source"]
+    last_keys = ["set_frontend_attenuation"]
+
+    ordered_cmds = [(k, cmds[k]) for k in first_keys if k in cmds]
+    ordered_cmds += [(k, v) for k, v in cmds.items()
+                     if k not in first_keys and k not in last_keys]
+    ordered_cmds += [(k, cmds[k]) for k in last_keys if k in cmds]
 
     logger.info(f"Opening session with Hardware at {ip}:{port}")
     
@@ -118,7 +129,9 @@ def run_cli():
                     
                     if msg_id == 'get_status_response':
                         s = response.get_status_response
-                        logger.info(f"   [Status] Attn: {s.attenuation_db}dB, LO: {s.lo_frequency_mhz}MHz")
+                        logger.info(f"   [Status] Attn: {s.attenuation_db}dB, LO: {s.lo_frequency_mhz}MHz, "
+                                    f"Cal: {source_name(s.cal_source_internal)}, "
+                                    f"Clock: {source_name(s.clock_source_internal)}")
                 
                 # Small delay to let hardware settle
                 time.sleep(0.05)
