@@ -5,10 +5,12 @@ import control_pb2
 BUFFER_SIZE = 128
 
 # The calibration-source (CAL_SEL) and clock-source (CLK_SEL) selects are each
-# carried on the wire as a single bool, but with opposite senses: CAL_SEL sends
-# `internal`, CLK_SEL sends `external`. Everything in Python speaks in terms of
-# `internal`; the clock-source call sites negate on the way into the protobuf
-# and back out of it, so the inversion lives at that boundary and nowhere else.
+# carried on the wire as a single bool. CAL_SEL's field is `internal` (true =
+# internal). CLK_SEL's field is named `external`, but on the actual STRAPS board
+# its polarity is inverted from that name -- bench testing shows the wire
+# `external` bit drives the board to *internal* and vice versa. Everything in
+# Python speaks in terms of `internal`, and the clock-source call sites map that
+# straight onto the field (no negation) so the client matches the hardware.
 _INTERNAL_ALIASES = ("internal", "int", "onboard", "on", "noise", "true")
 _EXTERNAL_ALIASES = ("external", "ext", "ref", "off", "false")
 
@@ -79,7 +81,7 @@ def get_and_print_status(sock):
         print("\n" + "*"*20 + " DEVICE STATUS " + "*"*19)
         print(f"  Calibration Enabled  : {status.calibration_enabled}")
         print(f"  Calibration Source   : {source_name(status.cal_source_internal)}")
-        print(f"  Clock Source         : {source_name(not status.clock_source_external)}")
+        print(f"  Clock Source         : {source_name(status.clock_source_external)}")
         print(f"  Frontend Attenuation : {status.attenuation_db} dB")
         print(f"  LO Frequency         : {status.lo_frequency_mhz} MHz")
         print(f"  RF Switch State      : {control_pb2.RfSwitchOption.Name(status.rf_switch)}")

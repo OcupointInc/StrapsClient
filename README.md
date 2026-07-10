@@ -175,20 +175,24 @@ the field name, not the position:
     the internal noise source. The internal noise-source amplifier is only
     powered when calibration mode is enabled *and* the internal source is
     selected, so pair this with `SetCalibrationEnabledRequest`.
-  * **`SetClockSourceRequest` (`CLK_SEL`)** — carries `external`: `true` selects
-    the external reference. Picks the reference the LMX2595 LO locks to. **Set
-    this before tuning the PLL** (`SetPllFrequencyRequest` or
-    `SetRfBandRequest`), since changing the reference changes the LO.
+  * **`SetClockSourceRequest` (`CLK_SEL`)** — the wire field is *named*
+    `external`, but on the STRAPS board its polarity is inverted from that name,
+    so this client maps `internal` straight onto it (`true` = internal on-board
+    oscillator). Picks the reference the LMX2595 LO locks to. **Set this before
+    tuning the PLL** (`SetPllFrequencyRequest` or `SetRfBandRequest`), since
+    changing the reference changes the LO.
 
 They appear in `GetStatusResponse` as `cal_source_internal` and
 `clock_source_external`, matching the sense of their respective requests.
 
-> **Wire-compatibility note.** The clock select is inverted relative to the
-> `rf-control` client, which sends `internal` on this same field number. Both
-> are a bool on field 1, so packets decode fine either way — the disagreement is
-> in meaning, and it surfaces as the LO locking to the wrong reference rather
-> than as a decode error. Firmware does not implement `SetClockSource` yet
-> (it replies `ERROR_CODE_UNSUPPORTED`), so this is currently unexercised.
+> **Wire-compatibility note.** Field 1 of `SetClockSourceRequest` is a bool that
+> the STRAPS firmware treats as `true` = internal on-board oscillator — bench-
+> confirmed on hardware, despite the field being *named* `external`. This client
+> has been flipped to match: it now sends `true` for internal (no negation). The
+> Go `rf-control` client still sends the opposite (`external = !internal`) and
+> will drive the LO to the wrong reference until it gets the same flip. Both are
+> a bool on field 1, so packets decode fine either way — the disagreement is in
+> meaning, surfacing as the LO locking to the wrong reference, not a decode error.
 
 In a `run.py` JSON config they're spelled as words, and `run.py` always sends
 `set_clock_source` before any LO-tuning command regardless of where it appears

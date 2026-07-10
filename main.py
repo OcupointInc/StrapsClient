@@ -96,8 +96,9 @@ def main():
             for internal in (False, True):
                 print(f"\n--- Setting Clock Source to {source_name(internal)} ---")
                 clock_packet = control_pb2.Packet()
-                # Spelled `external` on the wire, so negate.
-                clock_packet.set_clock_source_request.external = not internal
+                # CLK_SEL wire field is named `external`, but the board's polarity
+                # is inverted from that name, so map `internal` straight through.
+                clock_packet.set_clock_source_request.external = internal
                 send_packet(sock, clock_packet)
                 get_and_print_status(sock)
                 wait_for_enter()

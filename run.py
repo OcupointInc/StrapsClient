@@ -30,8 +30,11 @@ def execute_command(sock, key, val):
         elif key == "set_cal_source":
             packet.set_cal_source_request.internal = parse_source(val, "cal source")
         elif key == "set_clock_source":
-            # The clock select is spelled `external` on the wire, so negate.
-            packet.set_clock_source_request.external = not parse_source(val, "clock source")
+            # The CLK_SEL wire field is named `external`, but the STRAPS board's
+            # polarity is inverted from that name -- bench-confirmed on hardware
+            # that the wire `external` bit drives the board to *internal*. So map
+            # `internal` straight onto the field with no negation.
+            packet.set_clock_source_request.external = parse_source(val, "clock source")
         elif key == "set_frontend_attenuation":
             packet.set_frontend_attenuation_request.attenuation_db = val
         elif key == "set_rf_band":
@@ -132,7 +135,7 @@ def run_cli():
                         s = response.get_status_response
                         logger.info(f"   [Status] Attn: {s.attenuation_db}dB, LO: {s.lo_frequency_mhz}MHz, "
                                     f"Cal: {source_name(s.cal_source_internal)}, "
-                                    f"Clock: {source_name(not s.clock_source_external)}")
+                                    f"Clock: {source_name(s.clock_source_external)}")
                 
                 # Small delay to let hardware settle
                 time.sleep(0.05)
