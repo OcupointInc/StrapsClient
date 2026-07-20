@@ -5,7 +5,7 @@
     "set_channels_enabled": true,
     "set_cal_enabled": false,
     "set_cal_source": "internal",
-    "set_clock_source": "internal",
+    "set_clock_source": "external",
     "set_frontend_attenuation": 0,
     "set_switches": {
         "rf_switch": "RF_SWITCH_OPTION_4GHZ_LPF",
